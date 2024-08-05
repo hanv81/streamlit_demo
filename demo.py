@@ -1,6 +1,6 @@
 import streamlit as st
-import os
-os.environ["KERAS_BACKEND"] = "tensorflow"
+# import os
+# os.environ["KERAS_BACKEND"] = "tensorflow"
 from keras.datasets import fashion_mnist
 from keras.utils import to_categorical
 from keras.models import Sequential
@@ -24,6 +24,6 @@ model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accur
 # model.summary()
 
 with st.spinner('Training'):
-	history = model.fit(X_train, y_train_ohe, epochs = 100, verbose=0)
+	history = model.fit(X_train, y_train_ohe, epochs = 1, verbose=0)
 
 st.info('Model trained')
