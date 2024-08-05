@@ -1,4 +1,6 @@
 import streamlit as st
+import os
+os.environ["KERAS_BACKEND"] = "torch"
 from keras.datasets import fashion_mnist
 from keras.utils import to_categorical
 from keras.models import Sequential
