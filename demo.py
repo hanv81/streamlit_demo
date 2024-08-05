@@ -24,6 +24,6 @@ model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accur
 # model.summary()
 
 with st.spinner('Training'):
-	history = model.fit(X_train, y_train_ohe, epochs = 1, verbose=0)
+	history = model.fit(X_train, y_train_ohe, epochs = 10, verbose=0)
 
 st.info('Model trained')
