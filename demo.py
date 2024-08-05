@@ -1,6 +1,6 @@
 import streamlit as st
-# import os
-# os.environ["KERAS_BACKEND"] = "tensorflow"
+import os
+os.environ["KERAS_BACKEND"] = "tensorflow"
 from keras.datasets import fashion_mnist
 from keras.utils import to_categorical
 from keras.models import Sequential
