@@ -1,25 +1,27 @@
-from sklearn.cluster import KMeans
-from PIL import Image
 import streamlit as st
-import numpy as np
-import requests
+from keras.datasets import fashion_mnist
+from keras.utils import to_categorical
+from keras.models import Sequential
+from keras.layers import Dense, Input, Flatten
+from keras.utils import set_random_seed
+from keras.backend import clear_session
 
+(X_train, y_train), (X_test, y_test) = fashion_mnist.load_data()
+labels = ['T-shirt', 'Trouser', 'Pullover', 'Dress', 'Coat', 'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
+X_train = X_train / 255
+X_test = X_test / 255
+y_train_ohe = to_categorical(y_train, num_classes=10)
+y_test_ohe = to_categorical(y_test, num_classes=10)
+clear_session()
+set_random_seed(42)
+model = Sequential()
+model.add(Input(shape=X_train.shape[1:]))
+model.add(Flatten())
+model.add(Dense(10, activation='softmax'))
+model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+# model.summary()
 
-st.title('Image Segmentation with kMeans')
-col1, col2 = st.columns(2)
-with col1:
-	url = st.text_input('Image URL (Press Enter to apply)')
-with col2:
-	k = st.slider('K', min_value=2, max_value=10, value=3)
-if len(url) > 0:
-	col3, col4 = st.columns(2)
-	with col3:
-		st.image(url, caption='Original Image')
-	with col4:
-		img = Image.open(requests.get(url, stream=True).raw)
-		img = np.array(img)
-		kmeans = KMeans(n_clusters=k, n_init='auto')
-		kmeans.fit(img.reshape(-1, img.shape[-1]))
-		centers = kmeans.cluster_centers_.astype(int)
-		img_new = centers[kmeans.labels_].reshape(img.shape)
-		st.image(img_new, caption='Segmented Image')
+with st.spinner('Training'):
+	history = model.fit(X_train, y_train_ohe, epochs = 100, verbose=0)
+
+st.info('Model trained')
