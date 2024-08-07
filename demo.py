@@ -23,6 +23,7 @@ with tab1:
 			for j in range(10):
 				axs[i][j].axis('off')
 				axs[i][j].imshow(X_train[ids[j]], cmap='gray')
+		st.text('Dataset')
 		st.pyplot(fig)
 	with col2:
 		epochs = st.number_input('Epochs', value=10, min_value=1)
@@ -59,13 +60,12 @@ with tab2:
 		img = img/255
 		img = img.reshape(1,28,28)
 
-		labels = np.array(['T-shirt', 'Trouser', 'Pullover', 'Dress', 'Coat', 'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot'])
-		
 		model = load_model('model.keras')
 		if model is not None:
+			labels = np.array(['T-shirt', 'Trouser', 'Pullover', 'Dress', 'Coat', 'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot'])
+			prop = np.around(model.predict(img)[0]*100, decimals=2)
+			ids = np.argsort(prop)[-3:][::-1]
 			with col2:
 				st.subheader('Prediction')
-				prop = np.around(model.predict(img)[0]*100, decimals=2)
-				ids = np.argsort(prop)[-3:][::-1]
 				for i in ids:
 					st.write(labels[i], prop[i], '%')
