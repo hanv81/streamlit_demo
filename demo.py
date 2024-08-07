@@ -42,9 +42,20 @@ with tab1:
 			model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 			with st.spinner('Training'):
 				history = model.fit(X_train, y_train_ohe, epochs=epochs, verbose=0)
-				_, accuracy = model.evaluate(X_test, y_test_ohe)
-				st.info(f'Model trained, Test accuracy: {accuracy:.4f}')
 				model.save('model.keras')
+			with st.spinner('Evaluating'):
+				_, accuracy = model.evaluate(X_test, y_test_ohe)
+
+			st.info(f'Model trained, Test accuracy: {accuracy:.4f}')
+			fig, ax = plt.subplots()
+			ax.set_title('Learning Curve')
+			ax.set_xlabel('Epochs')
+			ax.set_ylabel('Loss | Accuracy')
+			ax.plot(history.history['loss'])
+			ax.plot(history.history['accuracy'])
+			ax.legend(['Loss', 'Accuracy'])
+			st.pyplot(fig)
+
 with tab2:
 	uploaded_file = st.file_uploader('Upload Image File', type=['png', 'jpg', 'jpeg'])
 	if uploaded_file is not None:
