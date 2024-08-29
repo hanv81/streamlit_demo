@@ -1,4 +1,4 @@
-import cv2
+import os,cv2
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
@@ -46,7 +46,7 @@ with tab1:
 			with st.spinner('Evaluating'):
 				_, accuracy = model.evaluate(X_test, y_test_ohe)
 
-			st.info(f'Model trained, Test accuracy: {accuracy:.4f}')
+			st.info(f'Model trained and saved. Test accuracy: {accuracy*100:.0f}%')
 			fig, ax = plt.subplots()
 			ax.set_title('Learning Curve')
 			ax.set_xlabel('Epochs')
@@ -63,7 +63,7 @@ with tab2:
 		bytes_data = uploaded_file.getvalue()
 		img = cv2.imdecode(np.frombuffer(bytes_data, np.uint8), cv2.IMREAD_COLOR)
 		with col1:
-			st.image(img)
+			st.image(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
 		
 		img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
 		img = cv2.resize(img, dsize=(28,28))
@@ -71,12 +71,15 @@ with tab2:
 		img = img/255
 		img = img.reshape(1,28,28)
 
-		model = load_model('model.keras')
-		if model is not None:
+		if os.path.exists('model.keras'):
 			labels = np.array(['T-shirt', 'Trouser', 'Pullover', 'Dress', 'Coat', 'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot'])
+			model = load_model('model.keras')
 			prop = np.around(model.predict(img)[0]*100, decimals=2)
 			ids = np.argsort(prop)[-3:][::-1]
 			with col2:
 				st.subheader('Prediction')
 				for i in ids:
 					st.write(labels[i], prop[i], '%')
+		else:
+			with col2:
+				st.error('Model not found')
